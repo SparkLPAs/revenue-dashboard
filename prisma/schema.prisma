@@ -1,0 +1,57 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+model Pipeline {
+  id             String   @id
+  name           String
+  category       String
+  paymentRoute   String
+  revenueModel   String
+  colour         String   @default("#6EE7B7")
+  active         Boolean  @default(true)
+  hasProducts    Boolean  @default(false)
+  dayRate        Float?
+  lastStripeSync DateTime?
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  products Product[]
+  entries  RevenueEntry[]
+}
+model Product {
+  id          String   @id @default(cuid())
+  pipelineId  String
+  name        String
+  group       String
+  price       Float
+  status      String   @default("coming_soon")
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  pipeline Pipeline       @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+  entries  RevenueEntry[]
+  @@unique([pipelineId, name])
+}
+model RevenueEntry {
+  id         String   @id @default(cuid())
+  pipelineId String
+  productId  String?
+  date       DateTime @default(now())
+  amount     Float
+  label      String?
+  leads      Int      @default(0)
+  quantity   Int      @default(1)
+  source     String   @default("manual")
+  stripeId   String?  @unique
+  createdAt  DateTime @default(now())
+  pipeline Pipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+  product  Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  @@index([pipelineId])
+  @@index([date])
+}

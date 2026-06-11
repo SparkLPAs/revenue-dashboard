@@ -1,0 +1,235 @@
+{
+  "exportedAt": "2026-06-11T00:00:00.000Z",
+  "counts": {
+    "pipelines": 8,
+    "products": 14,
+    "entries": 25
+  },
+  "pipelines": [
+    {
+      "id": "osiris-solutions",
+      "name": "Osiris Solutions",
+      "category": "B2B SaaS",
+      "paymentRoute": "Stripe",
+      "revenueModel": "Subscription",
+      "colour": "#6EE7B7",
+      "active": true,
+      "hasProducts": false,
+      "dayRate": null,
+      "sortOrder": 1
+    },
+    {
+      "id": "online-wills",
+      "name": "Online-Wills.co.uk",
+      "category": "B2C",
+      "paymentRoute": "Stripe",
+      "revenueModel": "Per-transaction",
+      "colour": "#67E8F9",
+      "active": true,
+      "hasProducts": false,
+      "dayRate": null,
+      "sortOrder": 2
+    },
+    {
+      "id": "sparkmade",
+      "name": "SparkMade",
+      "category": "Agency",
+      "paymentRoute": "Stripe",
+      "revenueModel": "Retainer + Project",
+      "colour": "#F0ABFC",
+      "active": true,
+      "hasProducts": false,
+      "dayRate": null,
+      "sortOrder": 3
+    },
+    {
+      "id": "spark-works",
+      "name": "Spark-Works",
+      "category": "Consulting",
+      "paymentRoute": "Direct",
+      "revenueModel": "Per-project",
+      "colour": "#FCD34D",
+      "active": true,
+      "hasProducts": false,
+      "dayRate": null,
+      "sortOrder": 4
+    },
+    {
+      "id": "business-advisor",
+      "name": "Business Advisor",
+      "category": "Contract",
+      "paymentRoute": "Direct",
+      "revenueModel": "Day rate",
+      "colour": "#FDBA74",
+      "active": true,
+      "hasProducts": false,
+      "dayRate": 375,
+      "sortOrder": 5
+    },
+    {
+      "id": "sparklpas",
+      "name": "SparkLPAs",
+      "category": "B2C SaaS",
+      "paymentRoute": "Stripe",
+      "revenueModel": "Per-transaction",
+      "colour": "#A5B4FC",
+      "active": true,
+      "hasProducts": false,
+      "dayRate": null,
+      "sortOrder": 6
+    },
+    {
+      "id": "digital-downloads",
+      "name": "Digital Downloads",
+      "category": "B2C Content",
+      "paymentRoute": "Direct",
+      "revenueModel": "Per-sale",
+      "colour": "#67E8F9",
+      "active": true,
+      "hasProducts": true,
+      "dayRate": null,
+      "sortOrder": 7
+    },
+    {
+      "id": "referral-commission",
+      "name": "Referral Commission",
+      "category": "Leads",
+      "paymentRoute": "Direct",
+      "revenueModel": "Per-referral",
+      "colour": "#F87171",
+      "active": true,
+      "hasProducts": false,
+      "dayRate": null,
+      "sortOrder": 8
+    }
+  ],
+  "products": [
+    {
+      "id": "cmq4upesz00015s0xh9t2mkt3",
+      "pipelineId": "digital-downloads",
+      "name": "UK Startup Guide",
+      "group": "Startup Guides",
+      "price": 19.99,
+      "status": "coming_soon",
+      "sortOrder": 1
+    },
+    {
+      "id": "cmq4upeta00035s0xi6y1lrot",
+      "pipelineId": "digital-downloads",
+      "name": "Ireland Startup Guide",
+      "group": "Startup Guides",
+      "price": 19.99,
+      "status": "coming_soon",
+      "sortOrder": 2
+    },
+    {
+      "id": "cmq4upetn00055s0xeg7fhxa8",
+      "pipelineId": "digital-downloads",
+      "name": "USA Startup Guide",
+      "group": "Startup Guides",
+      "price": 19.99,
+      "status": "coming_soon",
+      "sortOrder": 3
+    },
+    {
+      "id": "cmq4upets00075s0xt7tjrkdy",
+      "pipelineId": "digital-downloads",
+      "name": "New Zealand Startup Guide",
+      "group": "Startup Guides",
+      "price": 19.99,
+      "status": "coming_soon",
+      "sortOrder": 4
+    },
+    {
+      "id": "cmq4upeu400095s0xm20ev4ow",
+      "pipelineId": "digital-downloads",
+      "name": "Canada Startup Guide",
+      "group": "Startup Guides",
+      "price": 19.99,
+      "status": "coming_soon",
+      "sortOrder": 5
+    },
+    {
+      "id": "cmq4upeuf000b5s0x0sxrub26",
+      "pipelineId": "digital-downloads",
+      "name": "Australia Startup Guide",
+      "group": "Startup Guides",
+      "price": 19.99,
+      "status": "coming_soon",
+      "sortOrder": 6
+    },
+    {
+      "id": "cmq4upeun000d5s0xgg5qkixh",
+      "pipelineId": "digital-downloads",
+      "name": "England & Wales Estate Guide",
+      "group": "Estate Planning Guides",
+      "price": 24.99,
+      "status": "coming_soon",
+      "sortOrder": 7
+    },
+    {
+      "id": "cmq4upeuy000f5s0xcm12wjsh",
+      "pipelineId": "digital-downloads",
+      "name": "Scotland Estate Guide",
+      "group": "Estate Planning Guides",
+      "price": 24.99,
+      "status": "coming_soon",
+      "sortOrder": 8
+    },
+    {
+      "id": "cmq4upev4000h5s0xq0hdli9u",
+      "pipelineId": "digital-downloads",
+      "name": "N. Ireland Estate Guide",
+      "group": "Estate Planning Guides",
+      "price": 24.99,
+      "status": "coming_soon",
+      "sortOrder": 9
+    },
+    {
+      "id": "cmq4upevh000j5s0xwolhvghe",
+      "pipelineId": "digital-downloads",
+      "name": "Ireland Estate Guide",
+      "group": "Estate Planning Guides",
+      "price": 24.99,
+      "status": "coming_soon",
+      "sortOrder": 10
+    },
+    {
+      "id": "cmq4upevu000l5s0x1sabca5l",
+      "pipelineId": "digital-downloads",
+      "name": "USA Estate Guide",
+      "group": "Estate Planning Guides",
+      "price": 24.99,
+      "status": "coming_soon",
+      "sortOrder": 11
+    },
+    {
+      "id": "cmq4upew1000n5s0xfpsfw5a6",
+      "pipelineId": "digital-downloads",
+      "name": "New Zealand Estate Guide",
+      "group": "Estate Planning Guides",
+      "price": 24.99,
+      "status": "coming_soon",
+      "sortOrder": 12
+    },
+    {
+      "id": "cmq4upewa000p5s0x56wa3c5q",
+      "pipelineId": "digital-downloads",
+      "name": "Canada Estate Guide",
+      "group": "Estate Planning Guides",
+      "price": 24.99,
+      "status": "coming_soon",
+      "sortOrder": 13
+    },
+    {
+      "id": "cmq4upewi000r5s0x8muuwcfo",
+      "pipelineId": "digital-downloads",
+      "name": "Australia Estate Guide",
+      "group": "Estate Planning Guides",
+      "price": 24.99,
+      "status": "coming_soon",
+      "sortOrder": 14
+    }
+  ],
+  "entries": []
+}

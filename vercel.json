@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "prisma generate && prisma db push --accept-data-loss && npx tsx import-data.ts && next build",
+  "installCommand": "npm install",
+  "crons": [{ "path": "/api/sync/stripe", "schedule": "0 6 * * *" }]
+}
