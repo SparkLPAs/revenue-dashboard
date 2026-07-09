@@ -26,10 +26,22 @@ const products = [
   { name: "Canada Estate Guide", group: "Estate Planning Guides", price: 24.99 },
   { name: "Australia Estate Guide", group: "Estate Planning Guides", price: 24.99 },
 ];
+const defaultStages = [
+  { name: "Lead Inbound", sortOrder: 1, isWon: false, isLost: false },
+  { name: "Invoice Sent", sortOrder: 2, isWon: false, isLost: false },
+  { name: "Invoice Paid", sortOrder: 3, isWon: true, isLost: false },
+  { name: "Lost", sortOrder: 4, isWon: false, isLost: true },
+];
+
 async function main() {
   for (const p of pipelines) { await prisma.pipeline.upsert({ where: { id: p.id }, update: { name: p.name, category: p.category, paymentRoute: p.paymentRoute, revenueModel: p.revenueModel, colour: p.colour, hasProducts: p.hasProducts, dayRate: (p as any).dayRate ?? null, sortOrder: p.sortOrder }, create: { ...p, active: true } }); }
   let order = 1;
   for (const prod of products) { await prisma.product.upsert({ where: { pipelineId_name: { pipelineId: "digital-downloads", name: prod.name } }, update: { group: prod.group, price: prod.price }, create: { pipelineId: "digital-downloads", name: prod.name, group: prod.group, price: prod.price, status: "coming_soon", sortOrder: order } }); order++; }
-  console.log("Seeded:", await prisma.pipeline.count(), "pipelines,", await prisma.product.count(), "products");
+  for (const p of pipelines) {
+    for (const s of defaultStages) {
+      await prisma.stage.upsert({ where: { pipelineId_name: { pipelineId: p.id, name: s.name } }, update: {}, create: { pipelineId: p.id, name: s.name, sortOrder: s.sortOrder, isWon: s.isWon, isLost: s.isLost } });
+    }
+  }
+  console.log("Seeded:", await prisma.pipeline.count(), "pipelines,", await prisma.product.count(), "products,", await prisma.stage.count(), "stages");
 }
 main().catch((e) => { console.error(e); process.exit(1); }).finally(async () => { await prisma.$disconnect(); });
