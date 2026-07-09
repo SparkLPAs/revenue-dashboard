@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
+import { ensureDefaultStages } from "@/lib/stages";
 
 export const runtime = "nodejs";
 
@@ -45,6 +46,7 @@ export async function POST(req: Request) {
 
   let stageId: string | undefined = body.stageId;
   if (!stageId) {
+    await ensureDefaultStages(body.pipelineId);
     const firstStage = await prisma.stage.findFirst({
       where: { pipelineId: body.pipelineId },
       orderBy: { sortOrder: "asc" },

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
+import { ensureDefaultStages } from "@/lib/stages";
 
 export const runtime = "nodejs";
 
@@ -11,6 +12,8 @@ export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url);
   const pipelineId = searchParams.get("pipelineId") ?? undefined;
+
+  if (pipelineId) await ensureDefaultStages(pipelineId);
 
   const stages = await prisma.stage.findMany({
     where: pipelineId ? { pipelineId } : undefined,
