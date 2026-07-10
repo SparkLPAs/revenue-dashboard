@@ -12,10 +12,10 @@ const leadInclude = {
   activity: { orderBy: { createdAt: "desc" as const }, include: { author: { select: { id: true, name: true } } } },
 } as const;
 
-async function loadOwnedLead(id: string, user: { id: string; role: string }) {
+// Any signed-in user (admin or staff) can see and edit any lead -- there's
+// only ever one office team, so leads aren't siloed per person.
+async function loadLead(id: string) {
   const lead = await prisma.lead.findUnique({ where: { id }, include: leadInclude });
-  if (!lead) return null;
-  if (user.role !== "ADMIN" && lead.ownerId !== user.id) return "forbidden" as const;
   return lead;
 }
 
@@ -23,9 +23,8 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const lead = await loadOwnedLead(params.id, user);
+  const lead = await loadLead(params.id);
   if (lead === null) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  if (lead === "forbidden") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   return NextResponse.json(lead);
 }
 
@@ -33,9 +32,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const existing = await loadOwnedLead(params.id, user);
+  const existing = await loadLead(params.id);
   if (existing === null) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  if (existing === "forbidden") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const body = await req.json().catch(() => null);
   if (!body) return NextResponse.json({ error: "Invalid body" }, { status: 400 });
@@ -91,9 +89,8 @@ export async function DELETE(_req: Request, { params }: { params: { id: string }
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const existing = await loadOwnedLead(params.id, user);
+  const existing = await loadLead(params.id);
   if (existing === null) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  if (existing === "forbidden") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   await prisma.lead.delete({ where: { id: params.id } });
   return NextResponse.json({ ok: true });

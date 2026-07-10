@@ -98,7 +98,7 @@ export function LeadDialog({ pipelineId, stages, users, currentUser, lead, defau
     if (res.ok) onDeleted(lead.id);
   }
 
-  const canDelete = lead && (currentUser.role === "ADMIN" || lead.owner?.id === currentUser.id);
+  const canDelete = Boolean(lead);
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/60">

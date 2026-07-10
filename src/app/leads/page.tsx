@@ -13,9 +13,7 @@ export default async function LeadsPage() {
 
   const [pipelines, users] = await Promise.all([
     prisma.pipeline.findMany({ orderBy: { sortOrder: "asc" }, select: { id: true, name: true, colour: true } }),
-    user.role === "ADMIN"
-      ? prisma.user.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } })
-      : Promise.resolve([{ id: user.id, name: user.name }]),
+    prisma.user.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } }),
   ]);
 
   return (
@@ -24,9 +22,7 @@ export default async function LeadsPage() {
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-6">
         <div>
           <h1 className="text-lg font-semibold tracking-tight">Leads</h1>
-          <p className="text-xs text-text-muted">
-            {user.role === "ADMIN" ? "All leads across every pipeline" : "Your leads"}
-          </p>
+          <p className="text-xs text-text-muted">All leads across every pipeline</p>
         </div>
         <LeadsBoard
           pipelines={pipelines}

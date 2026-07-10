@@ -23,8 +23,6 @@ export async function GET(req: Request) {
   const where = {
     ...(pipelineId ? { pipelineId } : {}),
     ...(stageId ? { stageId } : {}),
-    // Staff only ever see their own leads; admins see everything.
-    ...(user.role === "STAFF" ? { ownerId: user.id } : {}),
   };
 
   const leads = await prisma.lead.findMany({
