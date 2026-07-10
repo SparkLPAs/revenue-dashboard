@@ -23,6 +23,8 @@ model Pipeline {
   updatedAt      DateTime @updatedAt
   products Product[]
   entries  RevenueEntry[]
+  stages   Stage[]
+  leads    Lead[]
 }
 model Product {
   id          String   @id @default(cuid())
@@ -52,6 +54,84 @@ model RevenueEntry {
   createdAt  DateTime @default(now())
   pipeline Pipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
   product  Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  lead     Lead?
   @@index([pipelineId])
   @@index([date])
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role     @default(STAFF)
+  createdAt    DateTime @default(now())
+  sessions Session[]
+  leads    Lead[]     @relation("LeadOwner")
+  activity Activity[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}
+
+model Stage {
+  id         String  @id @default(cuid())
+  pipelineId String
+  name       String
+  sortOrder  Int     @default(0)
+  isWon      Boolean @default(false)
+  isLost     Boolean @default(false)
+  pipeline Pipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+  leads    Lead[]
+  @@unique([pipelineId, name])
+}
+
+model Lead {
+  id             String    @id @default(cuid())
+  pipelineId     String
+  stageId        String
+  ownerId        String?
+  name           String
+  company        String?
+  email          String?
+  phone          String?
+  expectedValue  Float?
+  source         String?
+  notes          String?
+  nextActionAt   DateTime?
+  nextActionNote String?
+  closedAt       DateTime?
+  revenueEntryId String?   @unique
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  pipeline     Pipeline      @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+  stage        Stage         @relation(fields: [stageId], references: [id])
+  owner        User?         @relation("LeadOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  revenueEntry RevenueEntry? @relation(fields: [revenueEntryId], references: [id], onDelete: SetNull)
+  activity     Activity[]
+  @@index([pipelineId])
+  @@index([stageId])
+  @@index([ownerId])
+}
+
+model Activity {
+  id        String   @id @default(cuid())
+  leadId    String
+  authorId  String?
+  body      String
+  createdAt DateTime @default(now())
+  lead   Lead  @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  @@index([leadId])
 }
