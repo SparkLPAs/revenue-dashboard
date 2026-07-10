@@ -98,7 +98,18 @@ export function LeadsBoard({
     [leads]
   );
 
-  const wonTotal = useMemo(
+  const wonThisMonthTotal = useMemo(() => {
+    const now = new Date();
+    return leads
+      .filter((l) => l.stage.isWon && l.closedAt)
+      .filter((l) => {
+        const closed = new Date(l.closedAt as string);
+        return closed.getFullYear() === now.getFullYear() && closed.getMonth() === now.getMonth();
+      })
+      .reduce((sum, l) => sum + (l.expectedValue ?? 0), 0);
+  }, [leads]);
+
+  const wonToDateTotal = useMemo(
     () => leads.filter((l) => l.stage.isWon).reduce((sum, l) => sum + (l.expectedValue ?? 0), 0),
     [leads]
   );
@@ -139,7 +150,7 @@ export function LeadsBoard({
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <Card><CardContent className="p-4">
           <div className="text-xs uppercase tracking-wider text-text-muted">Leads</div>
           <div className="mt-1 text-xl font-bold tracking-tight">{openCount}</div>
@@ -149,8 +160,12 @@ export function LeadsBoard({
           <div className="mt-1 text-xl font-bold tracking-tight">{formatCurrency(openTotal)}</div>
         </CardContent></Card>
         <Card><CardContent className="p-4">
-          <div className="text-xs uppercase tracking-wider text-text-muted">Won Value</div>
-          <div className="mt-1 text-xl font-bold tracking-tight">{formatCurrency(wonTotal)}</div>
+          <div className="text-xs uppercase tracking-wider text-text-muted">Won This Month</div>
+          <div className="mt-1 text-xl font-bold tracking-tight">{formatCurrency(wonThisMonthTotal)}</div>
+        </CardContent></Card>
+        <Card><CardContent className="p-4">
+          <div className="text-xs uppercase tracking-wider text-text-muted">Won To Date</div>
+          <div className="mt-1 text-xl font-bold tracking-tight">{formatCurrency(wonToDateTotal)}</div>
         </CardContent></Card>
       </div>
 
