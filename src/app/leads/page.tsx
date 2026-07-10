@@ -11,10 +11,12 @@ export default async function LeadsPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
-  const [pipelines, users] = await Promise.all([
+  const [allPipelines, users] = await Promise.all([
     prisma.pipeline.findMany({ orderBy: { sortOrder: "asc" }, select: { id: true, name: true, colour: true } }),
     prisma.user.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } }),
   ]);
+  // Not tracked for leads -- keep it out of the picker entirely.
+  const pipelines = allPipelines.filter((p) => p.id !== "business-advisor");
 
   return (
     <>

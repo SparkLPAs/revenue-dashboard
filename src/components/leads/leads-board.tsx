@@ -32,12 +32,17 @@ export function LeadsBoard({
   const [dialogStages, setDialogStages] = useState<Stage[]>([]);
   const [dragStageId, setDragStageId] = useState<string | null>(null);
   const [managingStages, setManagingStages] = useState(false);
+  const [wonSummary, setWonSummary] = useState({ thisMonth: 0, toDate: 0 });
 
   const isAll = pipelineId === ALL_PIPELINES;
 
   useEffect(() => {
     if (!pipelineId) return;
     setLoading(true);
+    const wonSummaryUrl = isAll ? "/api/leads/won-summary" : `/api/leads/won-summary?pipelineId=${pipelineId}`;
+    fetch(wonSummaryUrl)
+      .then((r) => r.json())
+      .then((data) => setWonSummary({ thisMonth: data.thisMonth ?? 0, toDate: data.toDate ?? 0 }));
     if (isAll) {
       fetch(`/api/leads`)
         .then((r) => r.json())
@@ -98,22 +103,6 @@ export function LeadsBoard({
     [leads]
   );
 
-  const wonThisMonthTotal = useMemo(() => {
-    const now = new Date();
-    return leads
-      .filter((l) => l.stage.isWon && l.closedAt)
-      .filter((l) => {
-        const closed = new Date(l.closedAt as string);
-        return closed.getFullYear() === now.getFullYear() && closed.getMonth() === now.getMonth();
-      })
-      .reduce((sum, l) => sum + (l.expectedValue ?? 0), 0);
-  }, [leads]);
-
-  const wonToDateTotal = useMemo(
-    () => leads.filter((l) => l.stage.isWon).reduce((sum, l) => sum + (l.expectedValue ?? 0), 0),
-    [leads]
-  );
-
   const openCount = useMemo(() => leads.filter((l) => !l.stage.isLost).length, [leads]);
 
   function upsertLead(saved: Lead) {
@@ -161,11 +150,11 @@ export function LeadsBoard({
         </CardContent></Card>
         <Card><CardContent className="p-4">
           <div className="text-xs uppercase tracking-wider text-text-muted">Won This Month</div>
-          <div className="mt-1 text-xl font-bold tracking-tight">{formatCurrency(wonThisMonthTotal)}</div>
+          <div className="mt-1 text-xl font-bold tracking-tight">{formatCurrency(wonSummary.thisMonth)}</div>
         </CardContent></Card>
         <Card><CardContent className="p-4">
           <div className="text-xs uppercase tracking-wider text-text-muted">Won To Date</div>
-          <div className="mt-1 text-xl font-bold tracking-tight">{formatCurrency(wonToDateTotal)}</div>
+          <div className="mt-1 text-xl font-bold tracking-tight">{formatCurrency(wonSummary.toDate)}</div>
         </CardContent></Card>
       </div>
 
