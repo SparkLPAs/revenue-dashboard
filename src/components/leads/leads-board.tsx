@@ -35,24 +35,30 @@ export function LeadsBoard({
   const [wonSummary, setWonSummary] = useState({ thisMonth: 0, toDate: 0 });
 
   const isAll = pipelineId === ALL_PIPELINES;
+  const visiblePipelineIds = useMemo(() => new Set(pipelines.map((p) => p.id)), [pipelines]);
 
   useEffect(() => {
     if (!pipelineId) return;
     setLoading(true);
-    const wonSummaryUrl = isAll ? "/api/leads/won-summary" : `/api/leads/won-summary?pipelineId=${pipelineId}`;
-    fetch(wonSummaryUrl)
-      .then((r) => r.json())
-      .then((data) => setWonSummary({ thisMonth: data.thisMonth ?? 0, toDate: data.toDate ?? 0 }));
     if (isAll) {
+      const idList = pipelines.map((p) => p.id).join(",");
+      fetch(`/api/leads/won-summary?pipelineIds=${idList}`)
+        .then((r) => r.json())
+        .then((data) => setWonSummary({ thisMonth: data.thisMonth ?? 0, toDate: data.toDate ?? 0 }));
+      // Only pipelines shown in the picker count here -- e.g. Business Advisor is
+      // tracked in the wider revenue data but isn't used for lead tracking.
       fetch(`/api/leads`)
         .then((r) => r.json())
         .then((leadsData) => {
           setStages([]);
-          setLeads(Array.isArray(leadsData) ? leadsData : []);
+          setLeads(Array.isArray(leadsData) ? leadsData.filter((l: Lead) => visiblePipelineIds.has(l.pipelineId)) : []);
         })
         .finally(() => setLoading(false));
       return;
     }
+    fetch(`/api/leads/won-summary?pipelineId=${pipelineId}`)
+      .then((r) => r.json())
+      .then((data) => setWonSummary({ thisMonth: data.thisMonth ?? 0, toDate: data.toDate ?? 0 }));
     Promise.all([
       fetch(`/api/stages?pipelineId=${pipelineId}`).then((r) => r.json()),
       fetch(`/api/leads?pipelineId=${pipelineId}`).then((r) => r.json()),
