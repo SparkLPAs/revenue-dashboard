@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Plus, Settings2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Select } from "@/components/ui/input";
 import { formatCurrency } from "@/lib/utils";
 import { LeadCard } from "./lead-card";
@@ -61,6 +62,13 @@ export function LeadsBoard({
     [leads]
   );
 
+  const wonTotal = useMemo(
+    () => leads.filter((l) => l.stage.isWon).reduce((sum, l) => sum + (l.expectedValue ?? 0), 0),
+    [leads]
+  );
+
+  const openCount = useMemo(() => leads.filter((l) => !l.stage.isLost).length, [leads]);
+
   function upsertLead(saved: Lead) {
     setLeads((prev) => {
       const exists = prev.some((l) => l.id === saved.id);
@@ -95,6 +103,21 @@ export function LeadsBoard({
 
   return (
     <div className="space-y-4">
+      <div className="grid grid-cols-3 gap-4">
+        <Card><CardContent className="p-4">
+          <div className="text-xs uppercase tracking-wider text-text-muted">Leads</div>
+          <div className="mt-1 text-xl font-bold tracking-tight">{openCount}</div>
+        </CardContent></Card>
+        <Card><CardContent className="p-4">
+          <div className="text-xs uppercase tracking-wider text-text-muted">Open Pipeline Value</div>
+          <div className="mt-1 text-xl font-bold tracking-tight">{formatCurrency(openTotal)}</div>
+        </CardContent></Card>
+        <Card><CardContent className="p-4">
+          <div className="text-xs uppercase tracking-wider text-text-muted">Won Value</div>
+          <div className="mt-1 text-xl font-bold tracking-tight">{formatCurrency(wonTotal)}</div>
+        </CardContent></Card>
+      </div>
+
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Select value={pipelineId} onChange={(e) => setPipelineId(e.target.value)} className="w-56">
@@ -102,9 +125,6 @@ export function LeadsBoard({
               <option key={p.id} value={p.id}>{p.name}</option>
             ))}
           </Select>
-          <span className="text-xs text-text-muted">
-            Open pipeline value: <span className="font-semibold text-text-primary">{formatCurrency(openTotal)}</span>
-          </span>
         </div>
         <div className="flex items-center gap-2">
           {currentUser.role === "ADMIN" && (

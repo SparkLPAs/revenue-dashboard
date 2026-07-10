@@ -6,19 +6,20 @@ export type DashboardData = { totalRevenue: number; monthRevenue: number; todayR
 export type PipelineSummary = { id: string; name: string; category: string; paymentRoute: string; revenueModel: string; colour: string; active: boolean; hasProducts: boolean; total: number; month: number; leads: number; entryCount: number; };
 export async function getDashboardData(): Promise<DashboardData> {
   const monthStart = startOfMonth(); const todayStart = startOfToday(); const windowStart = daysAgo(29);
-  const [pipelines, entries] = await Promise.all([
+  const [pipelines, entries, totalLeads] = await Promise.all([
     prisma.pipeline.findMany({ orderBy: { sortOrder: "asc" } }),
     prisma.revenueEntry.findMany({ select: { pipelineId: true, amount: true, leads: true, date: true } }),
+    prisma.lead.count(),
   ]);
   const now = new Date();
   const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
-  let totalRevenue = 0; let monthRevenue = 0; let todayRevenue = 0; let totalLeads = 0;
+  let totalRevenue = 0; let monthRevenue = 0; let todayRevenue = 0;
   const perPipeline = new Map<string, { total: number; month: number; leads: number; count: number }>();
   const buckets = new Map<string, number>();
   for (let i = 29; i >= 0; i--) { const d = daysAgo(i); buckets.set(d.toISOString().slice(0, 10), 0); }
   for (const e of entries) {
     if (e.date > todayEnd) continue;
-    totalRevenue += e.amount; totalLeads += e.leads;
+    totalRevenue += e.amount;
     if (e.date >= monthStart) monthRevenue += e.amount;
     if (e.date >= todayStart) todayRevenue += e.amount;
     const agg = perPipeline.get(e.pipelineId) ?? { total: 0, month: 0, leads: 0, count: 0 };
