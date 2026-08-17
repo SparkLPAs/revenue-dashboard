@@ -1,7 +1,7 @@
 {
   "exportedAt": "2026-06-11T00:00:00.000Z",
   "counts": {
-    "pipelines": 8,
+    "pipelines": 10,
     "products": 14,
     "entries": 25
   },
@@ -101,6 +101,30 @@
       "hasProducts": false,
       "dayRate": null,
       "sortOrder": 8
+    },
+    {
+      "id": "sparkwills",
+      "name": "SparkWills",
+      "category": "B2C",
+      "paymentRoute": "Stripe",
+      "revenueModel": "Per-transaction",
+      "colour": "#C4B5FD",
+      "active": true,
+      "hasProducts": false,
+      "dayRate": null,
+      "sortOrder": 9
+    },
+    {
+      "id": "sparktrusts",
+      "name": "SparkTrusts",
+      "category": "B2C",
+      "paymentRoute": "Stripe",
+      "revenueModel": "Per-transaction",
+      "colour": "#5EEAD4",
+      "active": true,
+      "hasProducts": false,
+      "dayRate": null,
+      "sortOrder": 10
     }
   ],
   "products": [
