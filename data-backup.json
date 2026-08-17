@@ -1,7 +1,7 @@
 {
   "exportedAt": "2026-06-11T00:00:00.000Z",
   "counts": {
-    "pipelines": 9,
+    "pipelines": 10,
     "products": 14,
     "entries": 25
   },
@@ -113,6 +113,18 @@
       "hasProducts": false,
       "dayRate": null,
       "sortOrder": 9
+    },
+    {
+      "id": "sparktrusts",
+      "name": "SparkTrusts",
+      "category": "B2C",
+      "paymentRoute": "Stripe",
+      "revenueModel": "Per-transaction",
+      "colour": "#5EEAD4",
+      "active": true,
+      "hasProducts": false,
+      "dayRate": null,
+      "sortOrder": 10
     }
   ],
   "products": [
