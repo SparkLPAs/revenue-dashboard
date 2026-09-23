@@ -10,8 +10,15 @@ const prisma = new PrismaClient();
 // active, or sortOrder once a real deploy has set them.
 const CODE_SEEDED_PIPELINES = [
   {
-    id: "spark-solutions",
-    name: "Spark Solutions",
+    // Not "spark-solutions" — an existing pipeline already has that exact
+    // id (a Leads/Enquiry pipeline tracking marketing-site demo requests,
+    // unrelated to this one), which the id-based existence check below
+    // would otherwise have silently matched and skipped, meaning this
+    // pipeline never actually got created despite the build log showing
+    // one more pipeline than before (that extra one was pre-existing, not
+    // this one).
+    id: "spark-solutions-subscriptions",
+    name: "Spark Solutions Subscriptions",
     category: "B2B SaaS",
     paymentRoute: "Stripe",
     revenueModel: "Subscription",
