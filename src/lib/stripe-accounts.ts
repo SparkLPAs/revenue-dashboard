@@ -11,6 +11,8 @@ export const STRIPE_ACCOUNTS: StripeAccount[] = [
   // just not previously synced anywhere in this dashboard. Set this env
   // var to the same secret key value as spark-partner-dashboard's own
   // STRIPE_SECRET_KEY (a different Vercel project, so it isn't shared
-  // automatically).
-  { envKey: "STRIPE_SECRET_KEY_SOLUTIONS", pipelineId: "spark-solutions",  label: "Spark Solutions" },
+  // automatically). pipelineId is deliberately not "spark-solutions" — an
+  // existing Leads/Enquiry pipeline (marketing-site demo requests) already
+  // has that exact id.
+  { envKey: "STRIPE_SECRET_KEY_SOLUTIONS", pipelineId: "spark-solutions-subscriptions", label: "Spark Solutions Subscriptions" },
 ];
