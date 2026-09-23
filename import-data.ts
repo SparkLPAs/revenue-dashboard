@@ -1,9 +1,41 @@
 import { PrismaClient } from "@prisma/client";
 import { existsSync, readFileSync } from "fs";
 const prisma = new PrismaClient();
+
+// Pipelines added after the initial data-backup.json import below (which
+// only ever runs once, before any pipelines exist) — upserted on every
+// build so a fresh one added in code actually appears without needing a
+// manual DB insert. Update-safe: only touched fields are the ones a code
+// change would want to control; nothing here overwrites lastStripeSync,
+// active, or sortOrder once a real deploy has set them.
+const CODE_SEEDED_PIPELINES = [
+  {
+    id: "spark-solutions",
+    name: "Spark Solutions",
+    category: "B2B SaaS",
+    paymentRoute: "Stripe",
+    revenueModel: "Subscription",
+    colour: "#93C5FD",
+    hasProducts: false,
+  },
+];
+
+async function ensureCodeSeededPipelines() {
+  const max = await prisma.pipeline.aggregate({ _max: { sortOrder: true } });
+  let nextSortOrder = (max._max.sortOrder ?? 0) + 1;
+  for (const p of CODE_SEEDED_PIPELINES) {
+    const existing = await prisma.pipeline.findUnique({ where: { id: p.id } });
+    if (existing) continue;
+    await prisma.pipeline.create({ data: { ...p, sortOrder: nextSortOrder } });
+    nextSortOrder++;
+    console.log(`Created pipeline: ${p.id}`);
+  }
+}
+
 async function main() {
+  await ensureCodeSeededPipelines();
   const existing = await prisma.pipeline.count();
-  if (existing > 0) { console.log(`Database already has ${existing} pipelines — skipping import.`); return; }
+  if (existing > CODE_SEEDED_PIPELINES.length) { console.log(`Database already has ${existing} pipelines — skipping historical import.`); return; }
   if (!existsSync("data-backup.json")) { console.log("No data-backup.json found — skipping import."); return; }
   const raw = JSON.parse(readFileSync("data-backup.json", "utf8"));
   for (const p of raw.pipelines) {
